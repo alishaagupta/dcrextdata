@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/spf13/viper"
+	"github.com/vevsatechnologies/External_Data_Feed_Processor/models"
+	"gopkg.in/volatiletech/null.v6"
 )
 
 type POW struct {
@@ -15,65 +17,65 @@ type POW struct {
 }
 
 type POWdata struct {
-	date          string              `json : "date"`
-	hashper       string              `json : "hashper" `
-	blocksper     string              `json:"blocksper"`
-	luck          string              `json:"luck"`
-	miners        string              `json:"miners"`
-	pphash        string              `json:"pphash"`
-	ppshare       string              `json:"ppshare"`
-	totalKickback string              `json:"total_kickback"`
-	price         float64             `json:"price"`
-	hashrate      float64             `json:"hashrate"`
+	date          null.String         `json : "date"`
+	hashper       null.String         `json : "hashper" `
+	blocksper     null.String         `json:"blocksper"`
+	luck          null.String         `json:"luck"`
+	miners        null.String         `json:"miners"`
+	pphash        null.String         `json:"pphash"`
+	ppshare       null.String         `json:"ppshare"`
+	totalKickback null.String         `json:"total_kickback"`
+	price         null.String         `json:"price"`
+	hashrate      null.String         `json:"hashrate"`
 	blocksfound   int64               `json:"blocksfound"`
 	totalminers   int64               `json:"totalminers"`
 	globalStats   []globalStatsValues `json:"globalStats"`
 	dataVal       dataVal             `json:"data"`
 	decred        altpool             `json:"decred"`
 	dcr           altpoolCurrency     `json:"DCR"`
-	success       string              `json:"success"`
-	lastUpdate    int64               `json:"lastUpdate"`
+	success       null.String         `json:"success"`
+	lastUpdate    null.String         `json:"lastUpdate"`
 	mainnet       mainnet             `json:"mainnet"`
 	blockReward   blockReward         `json:"blockReward"`
 }
 
 type mainnet struct {
-	currentHeight     int64 `json:"currentHeight"`
-	networkHashrate   int64 `json:"networkHashrate"`
-	networkDifficulty int64 `json:"networkDifficulty"`
+	currentHeight     null.String `json:"currentHeight"`
+	networkHashrate   null.String `json:"networkHashrate"`
+	networkDifficulty null.String `json:"networkDifficulty"`
 }
 
 type blockReward struct {
-	total float64 `json:"total"`
-	pow   float64 `json:"pow"`
-	pos   float64 `json:"pos"`
-	dev   float64 `json:"dev"`
+	total null.String `json:"total"`
+	pow   null.String `json:"pow"`
+	pos   null.String `json:"pos"`
+	dev   null.String `json:"dev"`
 }
 
 type globalStatsValues struct {
-	time              string  `json:"time"`
-	networkHashrate   float64 `json:"network_hashrate"`
-	poolHashrate      float64 `json:"pool_hashrate"`
-	workers           int64   `json:"workers"`
-	networkDifficulty float64 `json:"network_difficulty"`
-	coinPrice         float64 `json:"coin_price"`
-	btcPrice          float64 `json:"btc_price"`
+	time              null.String `json:"time"`
+	networkHashrate   null.String `json:"network_hashrate"`
+	poolHashrate      null.String `json:"pool_hashrate"`
+	workers           null.String `json:"workers"`
+	networkDifficulty null.String `json:"network_difficulty"`
+	coinPrice         null.String `json:"coin_price"`
+	btcPrice          null.String `json:"btc_price"`
 }
 
 type dataVal struct {
-	poolName            string  `json:"pool_name"`
-	hashrate            float64 `json:"hashrate"`
-	efficiency          float64 `json:'efficiency"`
-	progress            float64 `json:"progress"`
-	workers             int64   `json:"workers"`
-	currentnetworkblock int64   `json:"currentnetworkblock"`
-	nextnetworkblock    int64   `json:"nextnetworkblock"`
-	lastblock           int64   `json:"lastblock"`
-	networkdiff         float64 `json:"networkdiff"`
-	esttime             float64 `json:"esttime"`
-	estshares           int64   `json:"estshares"`
-	timesincelast       int64   `json:"timesincelast"`
-	nethashrate         int64   `json:"nethashrate"`
+	poolName            null.String `json:"pool_name"`
+	hashrate            float64     `json:"hashrate"`
+	efficiency          null.String `json:'efficiency"`
+	progress            null.String `json:"progress"`
+	workers             null.String `json:"workers"`
+	currentnetworkblock null.String `json:"currentnetworkblock"`
+	nextnetworkblock    null.String `json:"nextnetworkblock"`
+	lastblock           null.String `json:"lastblock"`
+	networkdiff         null.String `json:"networkdiff"`
+	esttime             null.String `json:"esttime"`
+	estshares           null.String `json:"estshares"`
+	timesincelast       null.String `json:"timesincelast"`
+	nethashrate         int64       `json:"nethashrate"`
 }
 
 type altpool struct {
@@ -92,18 +94,18 @@ type altpool struct {
 }
 
 type altpoolCurrency struct {
-	algo          string  `json:"algo"`
-	port          int64   `json:"port"`
-	name          string  `json:"name"`
-	height        int64   `json:"height"`
-	workers       int64   `json:"workers"`
-	shares        int64   `json:"shares"`
-	hashrate      int64   `json:"hashrate"`
-	estimate      float64 `json:"estimate"`
-	blocks24h     int64   `json:"24h_blocks"`
-	btc24h        float64 `json:"24h_btc"`
-	lastblock     int64   `json:"lastblock"`
-	timesincelast int64   `json:"timesincelast"`
+	algo          null.String `json:"algo"`
+	port          null.String `json:"port"`
+	name          null.String `json:"name"`
+	height        null.String `json:"height"`
+	workers       null.String `json:"workers"`
+	shares        null.String `json:"shares"`
+	hashrate      null.String `json:"hashrate"`
+	estimate      null.String `json:"estimate"`
+	blocks24h     null.String `json:"24h_blocks"`
+	btc24h        null.String `json:"24h_btc"`
+	lastblock     null.String `json:"lastblock"`
+	timesincelast null.String `json:"timesincelast"`
 }
 
 func (p *POW) getPOW(id int, url string, api_key string) {
@@ -148,16 +150,16 @@ func (p *POW) getPOW(id int, url string, api_key string) {
 
 		var p1 models.Powdatatable
 
-		p1.ID = id
-		p1.HashRate = data.hashrate | data.dataVal.hashrate | data.pphash
+		// p1.ID = id
+		p1.HashRate = data.hashrate
 		p1.Efficiency = data.dataVal.efficiency
 		p1.Progress = data.dataVal.progress
 		p1.Workers = data.globalStats[0].workers
 		p1.CurrentNetworkBlock = data.dataVal.currentnetworkblock
 		p1.NextNetworkBlock = data.dataVal.nextnetworkblock
 		p1.LastBlock = data.dataVal.lastblock
-		p1.NetworkDiff = data.dataVal.networkdiff | data.globalStats[0].networkDifficulty | data.mainnet.networkDifficulty
-		p1.EstTime = data.globalStats[0].time | data.dataVal.esttime
+		p1.NetworkDiff = data.dataVal.networkdiff
+		p1.EstTime = data.globalStats[0].time
 		p1.EstShare = data.dataVal.estshares
 		p1.TimeSinceLast = data.dataVal.timesincelast
 		p1.NetHashrate = data.globalStats[0].networkHashrate
@@ -195,6 +197,7 @@ func (p *POW) getPOW(id int, url string, api_key string) {
 		p1.Powid = id
 
 		err := p1.Insert(db)
+
 	}
 
 }
