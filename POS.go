@@ -8,6 +8,8 @@ import (
 	"net/http"
 
 	"github.com/spf13/viper"
+	"github.com/vevsatechnologies/External_Data_Feed_Processor/models"
+	"gopkg.in/volatiletech/null.v6"
 )
 
 type POS struct {
@@ -15,28 +17,28 @@ type POS struct {
 }
 
 type POSData struct {
-	APIEnabled           string  `json:"APIEnabled"`
-	APIVersionsSupported []int   `json:"APIVersionsSupported"`
-	Network              string  `json:"Network"`
-	URL                  string  `json:"URL"`
-	Launched             string  `json:"Launched"`
-	LastUpdated          string  `json:"LastUpdated"`
-	Immature             string  `json:"Immature"`
-	Live                 string  `json:"Live"`
-	Voted                int64   `json:"Voted"`
-	Missed               int64   `json:"Missed"`
-	PoolFees             float64 `json:"PoolFees"`
-	ProportionLive       float64 `json:"ProportionLive"`
-	ProportionMissed     float64 `json:"ProportionMissed"`
-	UserCount            int64   `json:"UserCount"`
-	UserCountActive      int64   `json:"UserCountActive"`
+	APIEnabled           null.String  `json:"APIEnabled"`
+	APIVersionsSupported []int        `json:"APIVersionsSupported"`
+	Network              null.String  `json:"Network"`
+	URL                  null.String  `json:"URL"`
+	Launched             null.String  `json:"Launched"`
+	LastUpdated          null.String  `json:"LastUpdated"`
+	Immature             null.String  `json:"Immature"`
+	Live                 null.String  `json:"Live"`
+	Voted                null.Float64 `json:"Voted"`
+	Missed               null.Float64 `json:"Missed"`
+	PoolFees             null.Float64 `json:"PoolFees"`
+	ProportionLive       null.Float64 `json:"ProportionLive"`
+	ProportionMissed     null.Float64 `json:"ProportionMissed"`
+	UserCount            null.Float64 `json:"UserCount"`
+	UserCountActive      null.Float64 `json:"UserCountActive"`
 }
 
 type Data map[string]POSData
 
 func (p *POS) getPOS() {
 
-url := url
+	url := viper.Get("POS").(string)
 	request, err := http.NewRequest("GET", url, nil)
 
 	res, _ := p.client.Do(request)
@@ -46,6 +48,15 @@ url := url
 		panic(err.Error())
 	}
 
+	dbInfo := fmt.Sprintf("host=%s port=%s user=%s "+"password=%s dbname=%s sslmode=disable",
+		viper.Get("Database.pghost"), 5432, viper.Get("Database.pguser"), viper.Get("Database.pgpass"),
+		viper.Get("Database.pgdbname"))
+
+	db, err := sql.Open("postgres", dbInfo)
+	if err != nil {
+		panic(err.Error())
+		return
+	}
 	var data Data
 
 	json.Unmarshal(body, &data)
@@ -58,7 +69,7 @@ url := url
 
 		p1.Posid = key
 		p1.Apienabled = value.APIEnabled
-		p1.Apiversionssupported = value.APIVersionsSupported
+		// p1.Apiversionssupported = value.APIVersionsSupported
 		p1.Network = value.Network
 		p1.URL = value.URL
 		p1.Launched = value.Launched
@@ -72,10 +83,8 @@ url := url
 		p1.Proportionmissed = value.ProportionMissed
 		p1.Usercount = value.UserCount
 		p1.Usercountactive = value.UserCountActive
-		p1.Timestamp = NOW()
-
+		// p1.Timestamp = NOW()
 		err := p1.Insert(db)
 	}
-
 
 }
