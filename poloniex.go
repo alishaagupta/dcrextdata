@@ -8,18 +8,17 @@ import (
 	"net/http"
 
 	"github.com/spf13/viper"
-<<<<<<< HEAD
 
 	"github.com/vevsatechnologies/External_Data_Feed_Processor/models"
 
 	"github.com/vattle/sqlboiler/boil"
 	"github.com/vattle/sqlboiler/queries/qm"
-=======
+
 )
 
 const (
 	poloniexBaseURL = viper.Get("ExchangeData[0]")
->>>>>>> 5d384d00a11c52daa2872ca8513b3ad5855ed5e8
+
 )
 
 //Poloniex Structure containing Poloniex client data
