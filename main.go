@@ -4,7 +4,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -29,15 +28,7 @@ func main() {
 	viper.SetDefault("POW", "http://api.f2pool.com/decred/address")
 	viper.SetDefault("ExchangeData", "https://poloniex.com/public")
 
-<<<<<<< HEAD
 	db, err := sql.Open("postgres", "dbname="+viper.GetString("Database.pgdbname")+" user="+viper.GetString("Database.pguser")+"host="+viper.GetString("Database.pghost")+" password="+viper.GetString("Database.pgpass"))
-=======
-	dbInfo := fmt.Sprintf("host=%s port=%s user=%s "+"password=%s dbname=%s sslmode=disable",
-		viper.Get("Database.pghost"), 5432, viper.Get("Database.pguser"), viper.Get("Database.pgpass"),
-		viper.Get("Database.pgdbname"))
-
-	db, err := sql.Open("postgres", dbInfo)
->>>>>>> 5d384d00a11c52daa2872ca8513b3ad5855ed5e8
 	if err != nil {
 		panic(err.Error())
 		return
@@ -45,7 +36,7 @@ func main() {
 
 	boil.SetDB(db)
 
-	fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
+	// fetchHistoricData(1, "") //parameters : exchangeID,currency pair, start time, end time
 	getPOSdata()
 	for {
 		getHistoricData(1, "BTC-DCR", "1514764800", "1514851200") //parameters : exchangeID,currency pair, start time, end time                                    //parameters :  Currency pair
@@ -60,27 +51,27 @@ func main() {
 // Exchange id = 0 for Poloneix
 // Exchange id =1 for Bittrex
 
-func fetchHistoricData(exchangeID int, date string) {
+// func fetchHistoricData(exchangeID int, date string) {
 
-	if exchangeID == 0 { //Poloniex exchange
-		user := Poloniex{
+// 	if exchangeID == 0 { //Poloniex exchange
+// 		user := Poloniex{
 
-			client: &http.Client{},
-		}
-		user.fetchPoloniexData(date)
+// 			client: &http.Client{},
+// 		}
+// 		user.fetchPoloniexData(date)
 
-	}
+// 	}
 
-	if exchangeID == 1 { //Bittrex Exchange
+// 	if exchangeID == 1 { //Bittrex Exchange
 
-		user := Bittrex{
+// 		user := Bittrex{
 
-			client: &http.Client{},
-		}
-		user.fetchBittrexData(date)
-	}
+// 			client: &http.Client{},
+// 		}
+// 		user.fetchBittrexData(date)
+// 	}
 
-}
+// }
 
 func getPOSdata() {
 
@@ -97,11 +88,7 @@ func getPOWData(PoolID int, apiKey string) {
 		client: &http.Client{},
 	}
 
-<<<<<<< HEAD
 	user.getPOW(PoolID, viper.GetString("POW"+"["+string(PoolID)+"]"), apiKey)
-=======
-	user.getPOW(PoolID, viper.Get(string("POW")+"["+string(PoolID)+"]"), apiKey)
->>>>>>> 5d384d00a11c52daa2872ca8513b3ad5855ed5e8
 
 }
 
