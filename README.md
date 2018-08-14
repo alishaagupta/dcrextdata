@@ -39,3 +39,16 @@ sqlboiler postgres
 ```
 go run main.go bittrex.go poloniex.go POS.go POW.go 
 ```
+
+
+
+
+# Setting up the postgresql database 
+
+```
+sudo -u postgres psql postgres
+```
+
+```
+createdb data_feed_processor
+```
